@@ -15,9 +15,9 @@ int main(int argc, char *argv[])
   
     portno = atoi(argv[2]);
   
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sock = socket(AF_INET, SOCK_STREAM, 0);
   
-    if (sockfd < 0) 
+    if (sock < 0) 
         error("Falha ao abrir socket");
   
     server = gethostbyname(argv[1]);
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
   
     serv_addr.sin_port = htons(portno);
   
-    if (connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0) 
+    if (connect(sock,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0) 
         error("Falha ao conectar-se");
   
     printf("Digite uma mensagem: ");
@@ -46,14 +46,14 @@ int main(int argc, char *argv[])
   
     fgets(buffer,255,stdin);
   
-    n = write(sockfd, buffer, strlen(buffer));
+    n = write(sock, buffer, strlen(buffer));
   
     if (n < 0) 
          error("Falha ao escrever no socket");
   
     bzero(buffer,256);
   
-    n = read(sockfd,buffer,255);
+    n = read(sock,buffer,255);
   
     if (n < 0) 
          error("Falha na leitura do socket");

@@ -22,7 +22,7 @@ void error(char *msg)
     exit(1);
 }
 
-int sockfd, newsockfd; // São descritores de arquivos, ou seja, subscritos de matriz para a tabela de descritor de arquivo.
+int sock, newsock; // São descritores de arquivos, ou seja, subscritos de matriz para a tabela de descritor de arquivo.
 int portno;            // Armazena o número da porta na qual o servidor aceita conexões.
 int n;                 // É o valor de retorno para o read() e write() chamadas; Ou seja, contém o número de caracteres lidos ou escritos.
 int clilen;

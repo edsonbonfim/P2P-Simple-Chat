@@ -19,11 +19,11 @@ int main(int argc, char *argv[])
         exit(1);
     }
   
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    // Retorna um descritor (socket ID) se criado com sucesso, -1 caso contrário
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) error("ERROR opening socket");
   
-    if (sockfd < 0)
-        error("ERROR opening socket");
-  
+    // Reposiciona o ponteiro no índice zero
     bzero((char *) &serv_addr, sizeof(serv_addr));
     
     portno = atoi(argv[1]);
@@ -32,31 +32,35 @@ int main(int argc, char *argv[])
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(portno);
     
-    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
-        error("ERROR on binding");
+    // Associa um socket ID a um endereço para que os processos possam comunicar.
+    if (bind(sock, (struct sockaddr *) & serv_addr, sizeof(serv_addr)) < 0) error("ERROR on binding");
   
-    listen(sockfd, 5);
+    // Especifica o número máximo de pedidos de conexões que podem estar em espera para este processo
+    listen(sock, 5);
   
     clilen = sizeof(cli_addr);
   
     while (1) {
-        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+        // Estabelece conexão com o cliente especificado
+        newsock = accept(sock, (struct sockaddr *) &cli_addr, &clilen);
   
-        if (newsockfd < 0)
+        if (newsock < 0)
             error("ERROR on accept");
       
         if (fork() < 0)
             error("ERROR on fork");
       
         if (fork() == 0) {
-            close(sockfd);
-            bonfim(newsockfd);
+            close(sock);
+            bonfim(newsock);
             exit(0);
         }
       
-        else close(newsockfd);
+        // Liberta as estruturas de dados do kernel
+        else close(newsock);
     }
   
+    // Estamos em um loop infinito e nunca entraremos aqui!
     return 0;
 }
 
