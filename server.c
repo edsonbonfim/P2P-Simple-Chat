@@ -6,53 +6,70 @@
 
 #include "bonfim.h"
 
+void bonfim(int);
+
 int main(int argc, char *argv[])
 {  
     /**
-     * O usuário precisa passar o número da porta em que o servidor aceitará conexões como um argumento.
-     * Este código exibe uma mensagem de erro se o usuário não conseguir fazer isso.
-     */
-     if (argc < 2) {
-         fprintf(stderr,"ERROR, no port provided\n");
-         exit(1);
-     }
+    * O usuário precisa passar o número da porta em que o servidor aceitará conexões como um argumento.
+    * Este código exibe uma mensagem de erro se o usuário não conseguir fazer isso.
+    */
+    if (argc < 2) {
+        fprintf(stderr,"ERROR, no port provided\n");
+        exit(1);
+    }
   
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
   
-     if (sockfd < 0)
+    if (sockfd < 0)
         error("ERROR opening socket");
   
-     bzero((char *) &serv_addr, sizeof(serv_addr));
-     
-     portno = atoi(argv[1]);
-     
-     serv_addr.sin_family = AF_INET;
-     serv_addr.sin_addr.s_addr = INADDR_ANY;
-     serv_addr.sin_port = htons(portno);
-     
-     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    
+    portno = atoi(argv[1]);
+    
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(portno);
+    
+    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         error("ERROR on binding");
   
-     listen(sockfd, 5);
+    listen(sockfd, 5);
   
-     clilen = sizeof(cli_addr);
+    clilen = sizeof(cli_addr);
   
-     newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+    while (1) {
+        newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
   
-     if (newsockfd < 0) 
-          error("ERROR on accept");
+        if (newsockfd < 0)
+            error("ERROR on accept");
+      
+        if (fork() < 0)
+            error("ERROR on fork");
+      
+        if (fork() == 0) {
+            close(sockfd);
+            bonfim(newsockfd);
+            exit(0);
+        }
+      
+        else close(newsockfd);
+    }
   
-     bzero(buffer, 256);
+    return 0;
+}
+
+/**
+ * Existe uma instância separada desta função para cada conexão.
+ * Ele lida com todas as comunicações uma vez estabelecida uma conexão.
+ */
+void bonfim(int sock)
+{
+    bzero(buffer, 256);
+    
+    if (read(sock, buffer, 255) < 0) error("ERROR reading from socket");
+    if (write(sock, "I got your message", 18) < 0) error("ERROR writing to socket");
   
-     n = read(newsockfd,buffer,255);
-  
-     if (n < 0) error("ERROR reading from socket");
-     
-     printf("Here is the message: %s\n",buffer);
-  
-     n = write(newsockfd,"I got your message",18);
-  
-     if (n < 0) error("ERROR writing to socket");
-     
-     return 0;
+    printf("Here is the message: %s\n", buffer);
 }
