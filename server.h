@@ -4,29 +4,14 @@
  * @author Edson Onildo <edsononildo@id.uff.br>
  */
 
-#include "bonfim.h"
-
-void bonfim(int);
-
-int main(int argc, char *argv[])
+int server(int portno)
 {  
-    /**
-    * O usuário precisa passar o número da porta em que o servidor aceitará conexões como um argumento.
-    * Este código exibe uma mensagem de erro se o usuário não conseguir fazer isso.
-    */
-    if (argc < 2) {
-        fprintf(stderr,"ERROR, no port provided\n");
-        exit(1);
-    }
-  
     // Retorna um descritor (socket ID) se criado com sucesso, -1 caso contrário
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) error("ERROR opening socket");
   
     // Reposiciona o ponteiro no índice zero
     bzero((char *) &serv_addr, sizeof(serv_addr));
-    
-    portno = atoi(argv[1]);
     
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -52,7 +37,14 @@ int main(int argc, char *argv[])
       
         if (fork() == 0) {
             close(sock);
-            bonfim(newsock);
+            
+            bzero(buffer, 256);
+    
+            if (read(newsock, buffer, 255) < 0) error("ERROR reading from socket");
+            if (write(newsock, "I got your message", 18) < 0) error("ERROR writing to socket");
+  
+            printf("Here is the message: %s\n", buffer);
+          
             exit(0);
         }
       
@@ -62,18 +54,4 @@ int main(int argc, char *argv[])
   
     // Estamos em um loop infinito e nunca entraremos aqui!
     return 0;
-}
-
-/**
- * Existe uma instância separada desta função para cada conexão.
- * Ele lida com todas as comunicações uma vez estabelecida uma conexão.
- */
-void bonfim(int sock)
-{
-    bzero(buffer, 256);
-    
-    if (read(sock, buffer, 255) < 0) error("ERROR reading from socket");
-    if (write(sock, "I got your message", 18) < 0) error("ERROR writing to socket");
-  
-    printf("Here is the message: %s\n", buffer);
 }
