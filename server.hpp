@@ -1,15 +1,14 @@
 /**
- * Simple peer to peer chat program
+ * P2P-Chat
  *
  * https://github.com/EdsonOnildoJR/P2P-Chat
  *
  * @author Edson Onildo <edsononildo@id.uff.br>
  */
 
-int runServer()
+int runServer(int portNum)
 {
     int client, server;
-    int portNum = 1500;
     bool isExit = false;
     int bufsize = 1024;
     char buffer[bufsize];
@@ -29,7 +28,7 @@ int runServer()
     | c) É um argumento de protocolo: deve ser sempre 0
     |
     | Isto irá retornar um pequeno inteiro e é usado para todas as
-    | referências a este socket. Se a chamada de socket falhar, ele retorna -1
+    | referências a este socket. Se a chamada de socket falhar, ele retorna -1
     |
     */
 
@@ -47,14 +46,14 @@ int runServer()
     |
     | A variável serv_addr é uma estrutura de sockaddr_in.
     |
-    | sin_family contém um código para a família de endereços.
-    | deve sempre ser definido como AF_INET.
+    | sin_family contém um código para a família de endereços.
+    | deve sempre ser definido como AF_INET.
     |
-    | INADDR_ANY contém o endereço IP do host. Para servidor, este será
+    | INADDR_ANY contém o endereço IP do host. Para servidor, este será
     | sempre o endereço IP da máquina na qual o servidor está sendo executado.
-    | 
+    | 
     | htons() converte o número da porta da ordem de byte do host
-    | para um número de porta na ordem de bytes da rede.
+    | para um número de porta na ordem de bytes da rede.
     |
     */
 
@@ -68,9 +67,9 @@ int runServer()
     |--------------------------------------------------------------------------
     |
     | A chamada de sistema bind() vincula um socket a um endereço,
-    | neste caso o endereço do host atual e número de porta
-    | no qual o servidor será executado. É preciso três argumentos:
-    | 
+    | neste caso o endereço do host atual e número de porta
+    | no qual o servidor será executado. É preciso três argumentos:
+    | 
     | a) O descritor de arquivo de soquete
     | b) Um ponteiro para uma estrutura do tipo sockaddr
     | c) O tamanho do ponteiro passado como segundo argumento
@@ -91,11 +90,11 @@ int runServer()
     |--------------------------------------------------------------------------
     |
     | A chamada de sistema de escuta permite ao processo ouvir conexões socket.
-    | O programa permanecerá ocioso aqui se não houver conexões de entrada.
-    | 
+    | O programa permanecerá ocioso aqui se não houver conexões de entrada.
+    | 
     | É preciso 2 argumentos:
     | a) Descritor de arquivo de socket
-    | b) Tamanho para o número de clientes (MAX = 5)
+    | b) Tamanho para o número de clientes (MAX = 5)
     |
     */
   

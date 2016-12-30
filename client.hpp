@@ -1,19 +1,17 @@
 /**
- * Simple peer to peer chat program
+ * P2P-Chat
  *
  * https://github.com/EdsonOnildoJR/P2P-Chat
  *
  * @author Edson Onildo <edsononildo@id.uff.br>
  */
 
-int runClient()
+int runClient(char *host, int portNum)
 {
     int client;
-    int portNum = 1500;
     bool isExit = false;
     int bufsize = 1024;
     char buffer[bufsize];
-    const char* host = "localhost";
   
     struct sockaddr_in server_addr;
   
@@ -29,7 +27,7 @@ int runClient()
     | c) É um argumento de protocolo: deve ser sempre 0
     |
     | Isto irá retornar um pequeno inteiro e é usado para todas as
-    | referências a este socket. Se a chamada de socket falhar, ele retorna -1
+    | referências a este socket. Se a chamada de socket falhar, ele retorna -1
     |
     */
 
@@ -47,14 +45,14 @@ int runClient()
     |
     | A variável serv_addr é uma estrutura de sockaddr_in.
     |
-    | sin_family contém um código para a família de endereços.
-    | deve sempre ser definido como AF_INET.
+    | sin_family contém um código para a família de endereços.
+    | deve sempre ser definido como AF_INET.
     |
-    | INADDR_ANY contém o endereço IP do host. Para servidor, este será
+    | INADDR_ANY contém o endereço IP do host. Para servidor, este será
     | sempre o endereço IP da máquina na qual o servidor está sendo executado.
-    | 
+    | 
     | htons() converte o número da porta da ordem de byte do host
-    | para um número de porta na ordem de bytes da rede.
+    | para um número de porta na ordem de bytes da rede.
     |
     */
   

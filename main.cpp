@@ -1,5 +1,5 @@
 /**
- * Simple peer to peer chat program
+ * P2P-Chat
  *
  * https://github.com/EdsonOnildoJR/P2P-Chat
  *
@@ -19,7 +19,7 @@ int msg()
 int main(int argc, char *argv[])
 {  
     if (argc < 2) return msg();
-    if (*argv[1] == 115) return runServer();
-    if (*argv[1] == 99)  return runClient();
+    if (*argv[1] == 115) return runServer(atoi(argv[2]));
+    if (*argv[1] == 99)  return runClient(argv[2], atoi(argv[3]));
     return msg();
 }

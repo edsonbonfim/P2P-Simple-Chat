@@ -1,5 +1,5 @@
 /**
- * Simple peer to peer chat program
+ * P2P-Chat
  *
  * https://github.com/EdsonOnildoJR/P2P-Chat
  *
